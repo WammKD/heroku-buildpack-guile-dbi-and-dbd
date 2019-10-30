@@ -69,20 +69,13 @@ topic "Installing Guile DBI and DBD MySQL"
 if
 	[ ! -d "$BUILDS_CACHE_DIR/guile-dbi-$GUILE_DBI_VERSION" ]
 then
-	wget -c https://github.com/opencog/guile-dbi/archive/guile-dbi-$GUILE_DBI_VERSION.tar.gz                   && \
-		tar xvzf guile-dbi-$GUILE_DBI_VERSION.tar.gz                                                             && \
-		rm -f guile-dbi-$GUILE_DBI_VERSION.tar.gz                                                                && \
-		cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi && ./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make
-else
-	cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi
+	wget -c https://github.com/opencog/guile-dbi/archive/guile-dbi-$GUILE_DBI_VERSION.tar.gz && \
+		tar xvzf guile-dbi-$GUILE_DBI_VERSION.tar.gz                                           && \
+		rm -f guile-dbi-$GUILE_DBI_VERSION.tar.gz
 fi
 
-make install && cd ../guile-dbd-mysql
-
-if
-	[ ! -d "$BUILDS_CACHE_DIR/guile-dbi-$GUILE_DBI_VERSION" ]
-then
-	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make
-fi
-
-make install && cd ../..
+cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi                 && \
+	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install && \
+	cd ../guile-dbd-mysql                                             && \
+	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install && \
+	cd ../..
