@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# I should probably do a check to see if guile exists but we can do that later
+echo "Guile DBI and DBD"
+
+exit 0
