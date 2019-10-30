@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+#set -e
+
+# debug
+set -ex
+
+# parse and derive params
+LP_DIR=`cd $(dirname $0); cd ..; pwd`
+BUILD_DIR=$1
+CACHE_DIR=$2
+GUILE_DBI_VERSION=2.1.7
+GUILE_DBD_MYSQL_VERSION=2.1.6
+
+function indent() {
+	c='s/^/       /'
+
+	case $(uname) in
+		Darwin)
+			sed -l "$c"
+			;;
+		*)
+			sed -u "$c"
+			;;
+	esac
+}
+
+function topic() {
+	echo "-----> $*"
+}
+
+
+
+BUILDS_CACHE_DIR="$CACHE_DIR/guile-builds"
+
+# Store which STACK we are running on in the cache to bust the cache if it changes
+if [ -f $CACHE_DIR/.apt/STACK ]; then
+  CACHED_STACK=$(cat "$CACHE_DIR/.apt/STACK")
+else
+  CACHED_STACK=$STACK
+fi
+
+if
+	[[ $CACHED_STACK == $STACK ]]
+then
+	# STACK has not changed
+	topic "Reusing cache"
+else
+	# STACK changed
+	topic "Detected Stack changes, flushing cache"
+
+	rm -rf $BUILDS_CACHE_DIR
+fi
+
+
+
+mkdir -p $BUILD_DIR/.apt
+
+#give environment to later buildpacks
+export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH|GUILE_LOAD_PATH)=' > "$LP_DIR/export"
+
+
+
+mkdir -p $BUILDS_CACHE_DIR && cd $BUILDS_CACHE_DIR
+
+topic "Installing Guile DBI and DBD MySQL"
+if
+	[ ! -d "$BUILDS_CACHE_DIR/guile-dbi-$GUILE_DBI_VERSION" ]
+then
+	wget -c https://github.com/opencog/guile-dbi/archive/guile-dbi-$GUILE_DBI_VERSION.tar.gz                   && \
+		tar xvzf guile-dbi-$GUILE_DBI_VERSION.tar.gz                                                             && \
+		rm -f guile-dbi-$GUILE_DBI_VERSION.tar.gz                                                                && \
+		cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi && ./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make
+else
+	cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi
+fi
+
+make install && cd ../guile-dbd-mysql
+
+if
+	[ ! -d "$BUILDS_CACHE_DIR/guile-dbi-$GUILE_DBI_VERSION" ]
+then
+	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make
+fi
+
+make install && cd ../..
