@@ -65,6 +65,9 @@ export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPP
 
 mkdir -p $BUILDS_CACHE_DIR && cd $BUILDS_CACHE_DIR
 
+topic "libguile"
+ls $BUILD_DIR/.apt/usr/include/guile/2.2/ | indent
+
 topic "Installing Guile DBI and DBD MySQL"
 if
 	[ ! -d "$BUILDS_CACHE_DIR/guile-dbi-$GUILE_DBI_VERSION" ]
