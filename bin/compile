@@ -59,7 +59,7 @@ fi
 mkdir -p $BUILD_DIR/.apt
 
 #give environment to later buildpacks
-export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH|GUILE_LOAD_PATH)=' > "$LP_DIR/export"
+export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPPATH|PKG_CONFIG_PATH|PERL5LIB|GUILE_LOAD_PATH)=' > "$LP_DIR/export"
 
 
 
