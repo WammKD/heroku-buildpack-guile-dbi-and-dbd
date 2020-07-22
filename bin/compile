@@ -40,22 +40,18 @@ export | grep -E -e ' (PATH|LD_LIBRARY_PATH|LIBRARY_PATH|INCLUDE_PATH|CPATH|CPPP
 
 
 
-if
-	[ -f $CACHE_DIR/.apt/bin/art ]
-then
-	cd /tmp
+cd /tmp
 
-	topic "Downloading Guile DBI and DBD MySQL"
-	wget -c https://github.com/opencog/guile-dbi/archive/guile-dbi-$GUILE_DBI_VERSION.tar.gz && \
-		tar xvzf guile-dbi-$GUILE_DBI_VERSION.tar.gz                                           && \
-		rm -f guile-dbi-$GUILE_DBI_VERSION.tar.gz
+topic "Downloading Guile DBI and DBD MySQL"
+wget -c https://github.com/opencog/guile-dbi/archive/guile-dbi-$GUILE_DBI_VERSION.tar.gz && \
+	tar xvzf guile-dbi-$GUILE_DBI_VERSION.tar.gz                                           && \
+	rm -f guile-dbi-$GUILE_DBI_VERSION.tar.gz
 
-	topic "Installing Guile DBI"
-	cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi                 && \
-		./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install
+topic "Installing Guile DBI"
+cd guile-dbi-guile-dbi-$GUILE_DBI_VERSION/guile-dbi                 && \
+	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install
 
-	topic "Installing Guile DBD MySQL"
-	cd ../guile-dbd-mysql                                               && \
-		./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install && \
-		cd ../..
-fi
+topic "Installing Guile DBD MySQL"
+cd ../guile-dbd-mysql                                               && \
+	./autogen.sh --prefix=$BUILD_DIR/.apt/usr && make && make install && \
+	cd ../..
